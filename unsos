@@ -1,0 +1,20 @@
+#!/bin/bash
+
+FN=$1
+UN=$(whoami)
+DN=$(echo $FN | awk -F.tar '{print $1}')
+
+usage()
+{
+   echo "usage:  $0 <filename>" >&2
+   exit 1
+}
+
+if [ -z "$FN" ]; then
+   usage
+fi
+
+sudo tar xvfJ $FN >/dev/null 2>&1
+sudo chown -R $UN:$UN $DN
+sudo rm -f $FN
+
