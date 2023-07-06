@@ -1,3 +1,5 @@
+#!/bin/bash
+
 VER=$1
 
 OUTFILE="/tmp/listoperatorversions4ocpbundle"
