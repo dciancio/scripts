@@ -48,9 +48,11 @@ printf "OCP cluster ID:  ${OCPCLUSTERID}\n"
 printf "\nNode details:\n"
 printf "\nMaster nodes:\n"
 (echo "NAME|CPU|MEMORY|ROLES"; $CMD get nodes | grep master | awk '{print $1" "$3}' | while read node role;  do echo "$($CMD get node $node -o json | jq -r '(.metadata.name+"|"+.status.capacity.cpu+"|"+.status.capacity.memory)')|$role" ; done ) | column -s"|" -t 
+$CMD get nodes -l node-role.kubernetes.io/master=  -o json | jq -r '.items[]|(.metadata.name+","+.status.capacity.cpu+","+.status.capacity.memory)' | awk -F"," '{sum+=$2} END {print "Total cpu: " sum}'
 printf "\nWorker nodes:\n"
 (echo "NAME|CPU|MEMORY|ROLES"; $CMD get nodes | grep worker | grep -v infra | awk '{print $1" "$3}' | while read node role;  do echo "$($CMD get node $node -o json | jq -r '(.metadata.name+"|"+.status.capacity.cpu+"|"+.status.capacity.memory)')|$role"; done ) | column -s"|" -t
+$CMD get nodes -l node-role.kubernetes.io/worker=  -o json | jq -r '.items[]|(.metadata.name+","+.status.capacity.cpu+","+.status.capacity.memory)' | awk -F"," '{sum+=$2} END {print "Total cpu: " sum}'
 printf "\nInfra nodes:\n"
 (echo "NAME|CPU|MEMORY|ROLES"; $CMD get nodes | grep infra | awk '{print $1" "$3}' | while read node role;  do echo "$($CMD get node $node -o json | jq -r '(.metadata.name+"|"+.status.capacity.cpu+"|"+.status.capacity.memory)')|$role"; done ) | column -s"|" -t
+$CMD get nodes -l node-role.kubernetes.io/infra=  -o json | jq -r '.items[]|(.metadata.name+","+.status.capacity.cpu+","+.status.capacity.memory)' | awk -F"," '{sum+=$2} END {print "Total cpu: " sum}'
 
- 
